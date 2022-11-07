@@ -1,26 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-
-const folderPath = path.join(__dirname, 'secret-folder');
+const pathToFolder = path.join(__dirname, 'secret-folder');
 
 async function readFolder() {
-    const items = await fs.promises.readdir(folderPath, { withFileTypes: true });
-    const files = items.filter(item => item.isFile())
-    files.forEach(file => {
-        const filePath = path.join(folderPath, file.name);
-        const ext = path.extname(filePath);
-        const obj = path.parse(filePath);
-        const name = obj.name;
-        async function getSize() {
-            const statObj = await fs.promises.stat(filePath);
-            const size = statObj.size;
-            console.log(`${name} - ${ext.slice(1)} - ${size}b`)
-        }
-        getSize()
-    }
-
-    )
-
+  const items = await fs.promises.readdir(pathToFolder, {withFileTypes: true});
+  items.forEach(async item => {
+    if (item.isFile()) {
+      const pathToFile = path.join(pathToFolder, item.name);
+      const stat = await fs.promises.stat(pathToFile);
+      const fileName = path.basename(pathToFile, path.extname(pathToFile));
+      const fileExtension = path.extname(pathToFile).slice(1);
+    console.log(`${fileName} - ${fileExtension} - ${stat.size}b`)
+  }
+  })
 }
 
 readFolder()
