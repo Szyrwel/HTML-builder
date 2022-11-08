@@ -3,13 +3,8 @@ const path = require('path');
 const stdout = process.stdout;
 
 const pathToFile = path.join(__dirname, 'text.txt');
-fs.readFile(
-    pathToFile,
-    'utf-8',
-    (err, data) => {
-        if(err) {
-            throw err
-        };
-        stdout.write(data);
-    }
-)
+const readStream = fs.createReadStream(pathToFile, 'utf-8');
+
+readStream.on('data', (chunk) => {
+    console.log(chunk);
+})
